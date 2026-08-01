@@ -83,6 +83,8 @@ mongodb://mongouser:mongopassword@host1:27017,host2:27017,host3:27017/mongodb?re
 mongodb://mongouser:mongopassword@localhost:27017/mongodb?authSource=admin&maxPoolSize=10&connectTimeoutMS=5000&retryWrites=true&w=majority
 ```
 
+**Conectar desde otro contenedor en la misma red**
+
 NOTA: Si usas contedor docker para conectarse a MongoDB 7.0 no olvides usar `--network dev_network` para estar en la misma network
 
 ```shell
