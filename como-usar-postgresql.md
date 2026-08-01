@@ -75,5 +75,5 @@ para estar en la misma `network`
 ```shell
 # Conectar desde otro contenedor en la misma red
 # Conectar interactivamente a PostgreSQL
-docker run --rm -it --network container:postgres_docker -e PGPASSWORD=postgres postgres:16-alpine psql -h 127.0.0.1 -U postgres -d postgres
+docker run --rm -it --network container:postgres_docker -e PGPASSWORD=postgres postgres:16-alpine psql -h postgres_docker -U postgres -d postgres
 ```
