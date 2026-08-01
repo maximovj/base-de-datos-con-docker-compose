@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  mysql8_docker:
+    image: mysql:8.4
+    container_name: mysql8_docker
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpassword
+      MYSQL_TCP_PORT: 3306
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backups/mysql:/backups
+      - ./init/mysql:/docker-entrypoint-initdb.d
+      - ./conf/mysql:/etc/mysql/conf.d
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "--max_connections=100"
+      - "--innodb_buffer_pool_size=256M"
+      - "--innodb_log_file_size=64M"
+      - "--innodb_flush_log_at_trx_commit=2"
+      - "--innodb_flush_method=O_DIRECT"
+      - "--innodb_io_capacity=200"
+      - "--innodb_io_capacity_max=400"
+      - "--log_error=/var/log/mysql/error.log"
+      - "--slow_query_log=1"
+      - "--slow_query_log_file=/var/log/mysql/slow.log"
+      - "--long_query_time=2"
+      - "--general_log=0"
+      - "--general_log_file=/var/log/mysql/general.log"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - dev_network
+
+volumes:
+  mysql_data:
+    name: mysql8_docker_data
+
+networks:
+  dev_network:
+    name: dev_network
+    driver: bridge
