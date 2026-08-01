@@ -11,3 +11,17 @@ Este repositorio contiene base de datos para arracar o levantarlos con `docker c
   - mysql:8.4
   - mongo:7.0
 
+# Como usar 
+
+- Pudes consultar la documentación **como usar postgresql**
+
+  - [Como usar Postgres](/como-usar-postgresql.md)
+
+- Pudes consultar la documentación **como usar mysql**
+
+  - [Como usar MySQL](/como-usar-mysql.md)
+
+- Pudes consultar la documentación **como usar mongo**
+
+  - [Como usar MongoDB](/como-usar-mongo.md)
+
