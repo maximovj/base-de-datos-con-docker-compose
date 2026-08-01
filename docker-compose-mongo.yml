@@ -6,8 +6,8 @@ services:
     container_name: mongo_docker
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopassword
       MONGO_INITDB_DATABASE: mongodb
       MONGO_OPLOG_SIZE: 128
     ports:
