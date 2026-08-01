@@ -21,7 +21,7 @@ docker compose -f docker-compose-postgres.yml up -d
 docker compose -f docker-compose-postgres.yml down
 ```
 
-# PostgreSQL + Docker compose
+# MySQL 8.4 + Docker compose
 
 ```shell
 # Levantar la base  de datos de MySQL 8.4 usando docker compose
