@@ -9,3 +9,5 @@ Este repositorio contiene base de datos para arracar o levantarlos con `docker c
 - Docker images:
   - postgres:16-alpine
   - mysql:8.4
+  - mongo:7.0
+
