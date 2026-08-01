@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongo_docker:
+    image: mongo:7.0
+    container_name: mongo_docker
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: mongodb
+      MONGO_OPLOG_SIZE: 128
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+      - ./backups/mongo:/backups
+      - ./init/mongo:/docker-entrypoint-initdb.d
+    command:
+      - "--bind_ip_all"
+      - "--auth"
+      - "--wiredTigerCacheSizeGB=1"
+      - "--logpath=/var/log/mongodb/mongod.log"
+      - "--logappend"
+      - "--slowms=100"
+      - "--profile=1"
+      - "--setParameter"
+      - "enableLocalhostAuthBypass=0"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - dev_network
+
+volumes:
+  mongo_data:
+    name: mongo_docker_data
+  mongo_config:
+    name: mongo_docker_config
+
+networks:
+  dev_network:
+    name: dev_network
+    driver: bridge
