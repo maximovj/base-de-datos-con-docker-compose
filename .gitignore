@@ -1,2 +1,6 @@
 !backups/postgres/.gitkeep
+!backups/mysql/.gitkeep
+
+conf/mysql/**
+
 *.env
