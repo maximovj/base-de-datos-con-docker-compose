@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  mysql8_docker:
+  mysql_docker:
     image: mysql:8.4
-    container_name: mysql8_docker
+    container_name: mysql_docker
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -45,7 +45,7 @@ services:
 
 volumes:
   mysql_data:
-    name: mysql8_docker_data
+    name: mysql_docker_data
 
 networks:
   dev_network:
