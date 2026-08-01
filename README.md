@@ -11,6 +11,16 @@ Este repositorio contiene base de datos para arracar o levantarlos con `docker c
   - mysql:8.4
   - mongo:7.0
 
+# Docker imagenes en memoria
+
+```shell
+$ docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+REPOSITORY          TAG         SIZE
+mysql               8.4         1.13GB
+postgres            16-alpine   420MB
+mongo               7.0         1.19GB
+```
+
 # Como usar 
 
 - Pudes consultar la documentación **como usar postgresql**
