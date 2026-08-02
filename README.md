@@ -37,5 +37,5 @@ mongo               7.0         1.19GB
 
 - Pudes consultar la documentación **como usar oracle**
 
-  - [Como usar MongoDB](/como-usar-oracle.md)
+  - [Como usar Oracle XE](/como-usar-oracle.md)
 
