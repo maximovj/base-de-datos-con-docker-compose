@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  oracle_docker:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle_docker
+    restart: unless-stopped
+    environment:
+      ORACLE_PASSWORD: oraclepassword
+      APP_USER: oracleuser
+      APP_USER_PASSWORD: oraclepassword
+      ORACLE_DATABASE: oracledb
+      ORACLE_SID: XE
+      ORACLE_PDB: XEPDB1
+      ORACLE_CHARACTERSET: AL32UTF8
+    ports:
+      - "1521:1521"
+      - "5500:5500"  # EM Express (Enterprise Manager)
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+      - oracle_backup:/opt/oracle/backups
+      - ./init/oracle:/docker-entrypoint-initdb.d
+      - ./scripts/oracle:/scripts
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    shm_size: 2g
+    command: 
+      - "-l"
+      - "-t"
+      - "-g"
+      - "-m"
+      - "500M"  # Limit memory usage
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - dev_network
+
+volumes:
+  oracle_data:
+    name: oracle_docker_data
+  oracle_backup:
+    name: oracle_docker_backup
+
+networks:
+  dev_network:
+    name: dev_network
+    driver: bridge
