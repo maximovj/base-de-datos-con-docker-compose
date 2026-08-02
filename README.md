@@ -25,7 +25,7 @@ mongo               7.0         1.19GB
 
 - Pudes consultar la documentación **como usar postgresql**
 
-  - [Como usar Postgres](/como-usar-postgresql.md)
+  - [Como usar PostgreSQL](/como-usar-postgresql.md)
 
 - Pudes consultar la documentación **como usar mysql**
 
@@ -34,4 +34,8 @@ mongo               7.0         1.19GB
 - Pudes consultar la documentación **como usar mongo**
 
   - [Como usar MongoDB](/como-usar-mongo.md)
+
+- Pudes consultar la documentación **como usar oracle**
+
+  - [Como usar MongoDB](/como-usar-oracle.md)
 
