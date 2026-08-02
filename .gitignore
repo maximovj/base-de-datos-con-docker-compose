@@ -1,6 +1,7 @@
 !backups/postgres/.gitkeep
 !backups/mysql/.gitkeep
 !backups/mongo/.gitkeep
+!backups/oracle/.gitkeep
 
 conf/mysql/**
 
