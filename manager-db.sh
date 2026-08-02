@@ -25,60 +25,6 @@ show_header() {
     echo ""
 }
 
-# Función para obtener el nombre del contenedor desde el archivo compose
-get_container_name() {
-    local compose_file=$1
-    
-    # Buscar el nombre del contenedor en el archivo compose
-    local container_name=$(grep "container_name:" "$compose_file" | head -1 | awk '{print $2}' | tr -d '"')
-    
-    # Si no encuentra container_name, intentar obtener el nombre del servicio
-    if [ -z "$container_name" ]; then
-        container_name=$(grep -A 1 "^[a-zA-Z]" "$compose_file" | grep -v ":" | head -1 | tr -d ' ')
-    fi
-    
-    echo "$container_name"
-}
-
-# Función para verificar si una base de datos está corriendo
-is_db_running() {
-    local compose_file=$1
-    local container_name=$(get_container_name "$compose_file")
-    
-    # Si el nombre del contenedor está vacío, intentar con un patrón más flexible
-    if [ -z "$container_name" ]; then
-        # Buscar cualquier contenedor que tenga el puerto de la base de datos
-        case "$compose_file" in
-            *postgres*)
-                docker ps --format "{{.Names}}" | grep -E "postgres|postgre" | head -1 | grep -q .
-                return $?
-                ;;
-            *mysql*)
-                docker ps --format "{{.Names}}" | grep -E "mysql|mariadb" | head -1 | grep -q .
-                return $?
-                ;;
-            *mongo*)
-                docker ps --format "{{.Names}}" | grep -E "mongo|mongodb" | head -1 | grep -q .
-                return $?
-                ;;
-            *oracle*)
-                docker ps --format "{{.Names}}" | grep -E "oracle|xe" | head -1 | grep -q .
-                return $?
-                ;;
-            *)
-                return 1
-                ;;
-        esac
-    fi
-    
-    # Verificar si el contenedor específico está corriendo
-    if docker ps --format "{{.Names}}" | grep -q "^${container_name}$"; then
-        return 0
-    else
-        return 1
-    fi
-}
-
 # Función para iniciar una base de datos
 start_db() {
     local name=$1
@@ -110,26 +56,38 @@ stop_db() {
     fi
 }
 
-# Función para mostrar el estado de una base de datos específica
-show_db_status() {
-    local name=$1
-    local compose_file=$2
-    
-    if is_db_running "$compose_file"; then
-        echo -e "${GREEN}●${NC} $name: ${GREEN}Corriendo${NC}"
-    else
-        echo -e "${RED}○${NC} $name: ${RED}Detenido${NC}"
-    fi
-}
-
 # Función para mostrar el estado completo
 show_status() {
     echo -e "\n${BOLD}${BLUE}📊 ESTADO DE BASES DE DATOS${NC}"
     echo "─────────────────────────────────────────"
-    show_db_status "PostgreSQL" "docker-compose-postgres.yml"
-    show_db_status "MySQL" "docker-compose-mysql.yml"
-    show_db_status "MongoDB" "docker-compose-mongo.yml"
-    show_db_status "Oracle XE" "docker-compose-oracle.yml"
+    
+    # PostgreSQL
+    if docker ps --format "{{.Names}}" | grep -qi "postgres"; then
+        echo -e "${GREEN}●${NC} PostgreSQL: ${GREEN}Corriendo${NC}"
+    else
+        echo -e "${RED}○${NC} PostgreSQL: ${RED}Detenido${NC}"
+    fi
+    
+    # MySQL
+    if docker ps --format "{{.Names}}" | grep -qi "mysql"; then
+        echo -e "${GREEN}●${NC} MySQL: ${GREEN}Corriendo${NC}"
+    else
+        echo -e "${RED}○${NC} MySQL: ${RED}Detenido${NC}"
+    fi
+    
+    # MongoDB
+    if docker ps --format "{{.Names}}" | grep -qi "mongo"; then
+        echo -e "${GREEN}●${NC} MongoDB: ${GREEN}Corriendo${NC}"
+    else
+        echo -e "${RED}○${NC} MongoDB: ${RED}Detenido${NC}"
+    fi
+    
+    # Oracle XE
+    if docker ps --format "{{.Names}}" | grep -qi "oracle"; then
+        echo -e "${GREEN}●${NC} Oracle XE: ${GREEN}Corriendo${NC}"
+    else
+        echo -e "${RED}○${NC} Oracle XE: ${RED}Detenido${NC}"
+    fi
     
     echo -e "\n${BOLD}${BLUE}📋 CONTENEDORES ACTIVOS${NC}"
     echo "─────────────────────────────────────────"
@@ -137,10 +95,10 @@ show_status() {
     echo ""
 }
 
-# Función para manejar la selección de bases de datos específicas
+# Función para manejar la selección de bases de datos específicas (start)
 select_and_start() {
     local options=(
-        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Todas" "Volver"
+        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Todas"
     )
     
     while true; do
@@ -152,11 +110,13 @@ select_and_start() {
         for i in "${!options[@]}"; do
             echo -e "${CYAN}$((i+1)))${NC} ${options[$i]}"
         done
+        echo -e "${CYAN}0)${NC} Volver al menú principal"
         
         echo ""
-        read -p "Opción (1-${#options[@]}): " choice
+        read -p "Opción (0-${#options[@]}): " choice
         
         case $choice in
+            0) return ;;
             1) start_db "PostgreSQL" "docker-compose-postgres.yml"; break ;;
             2) start_db "MySQL" "docker-compose-mysql.yml"; break ;;
             3) start_db "MongoDB" "docker-compose-mongo.yml"; break ;;
@@ -168,7 +128,6 @@ select_and_start() {
                 start_db "Oracle XE" "docker-compose-oracle.yml"
                 break
                 ;;
-            6) return ;;
             *) echo -e "${RED}Opción inválida${NC}" ;;
         esac
         echo ""
@@ -179,7 +138,7 @@ select_and_start() {
 # Función para manejar la selección de bases de datos específicas (stop)
 select_and_stop() {
     local options=(
-        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Todas" "Volver"
+        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Todas"
     )
     
     while true; do
@@ -191,11 +150,13 @@ select_and_stop() {
         for i in "${!options[@]}"; do
             echo -e "${CYAN}$((i+1)))${NC} ${options[$i]}"
         done
+        echo -e "${CYAN}0)${NC} Volver al menú principal"
         
         echo ""
-        read -p "Opción (1-${#options[@]}): " choice
+        read -p "Opción (0-${#options[@]}): " choice
         
         case $choice in
+            0) return ;;
             1) stop_db "PostgreSQL" "docker-compose-postgres.yml"; break ;;
             2) stop_db "MySQL" "docker-compose-mysql.yml"; break ;;
             3) stop_db "MongoDB" "docker-compose-mongo.yml"; break ;;
@@ -207,7 +168,6 @@ select_and_stop() {
                 stop_db "Oracle XE" "docker-compose-oracle.yml"
                 break
                 ;;
-            6) return ;;
             *) echo -e "${RED}Opción inválida${NC}" ;;
         esac
         echo ""
@@ -218,7 +178,7 @@ select_and_stop() {
 # Función para reiniciar bases de datos
 select_and_restart() {
     local options=(
-        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Todas" "Volver"
+        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Todas"
     )
     
     while true; do
@@ -230,11 +190,13 @@ select_and_restart() {
         for i in "${!options[@]}"; do
             echo -e "${CYAN}$((i+1)))${NC} ${options[$i]}"
         done
+        echo -e "${CYAN}0)${NC} Volver al menú principal"
         
         echo ""
-        read -p "Opción (1-${#options[@]}): " choice
+        read -p "Opción (0-${#options[@]}): " choice
         
         case $choice in
+            0) return ;;
             1) 
                 stop_db "PostgreSQL" "docker-compose-postgres.yml"
                 sleep 2
@@ -271,7 +233,6 @@ select_and_restart() {
                 start_db "Oracle XE" "docker-compose-oracle.yml"
                 break
                 ;;
-            6) return ;;
             *) echo -e "${RED}Opción inválida${NC}" ;;
         esac
         echo ""
@@ -282,7 +243,7 @@ select_and_restart() {
 # Función para ver logs
 view_logs() {
     local options=(
-        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE" "Volver"
+        "PostgreSQL" "MySQL" "MongoDB" "Oracle XE"
     )
     
     while true; do
@@ -294,11 +255,13 @@ view_logs() {
         for i in "${!options[@]}"; do
             echo -e "${CYAN}$((i+1)))${NC} ${options[$i]}"
         done
+        echo -e "${CYAN}0)${NC} Volver al menú principal"
         
         echo ""
-        read -p "Opción (1-${#options[@]}): " choice
+        read -p "Opción (0-${#options[@]}): " choice
         
         case $choice in
+            0) return ;;
             1) 
                 echo -e "\n${YELLOW}Logs de PostgreSQL (presiona Ctrl+C para salir)${NC}"
                 docker compose -f "docker-compose-postgres.yml" logs -f
@@ -315,24 +278,9 @@ view_logs() {
                 echo -e "\n${YELLOW}Logs de Oracle XE (presiona Ctrl+C para salir)${NC}"
                 docker compose -f "docker-compose-oracle.yml" logs -f
                 ;;
-            5) return ;;
             *) echo -e "${RED}Opción inválida${NC}" ;;
         esac
     done
-}
-
-# Función para verificar el estado real de los contenedores
-check_container_status() {
-    local service_name=$1
-    
-    # Buscar contenedores que coincidan con el servicio
-    local containers=$(docker ps --format "{{.Names}}" | grep -i "$service_name")
-    
-    if [ -n "$containers" ]; then
-        return 0
-    else
-        return 1
-    fi
 }
 
 # Menú principal
@@ -348,10 +296,10 @@ main_menu() {
         echo -e "${CYAN}3)${NC} Reiniciar bases de datos"
         echo -e "${CYAN}4)${NC} Ver estado"
         echo -e "${CYAN}5)${NC} Ver logs"
-        echo -e "${CYAN}6)${NC} Salir"
+        echo -e "${CYAN}0)${NC} Salir"
         echo ""
         
-        # Mostrar estado rápido usando verificación directa
+        # Mostrar estado rápido
         echo -e "${BOLD}${BLUE}📊 ESTADO RÁPIDO${NC}"
         echo "─────────────────────────────────────────"
         
@@ -386,9 +334,13 @@ main_menu() {
         echo "─────────────────────────────────────────"
         echo ""
         
-        read -p "Selecciona una opción (1-6): " main_choice
+        read -p "Selecciona una opción (0-5): " main_choice
         
         case $main_choice in
+            0) 
+                echo -e "\n${GREEN}¡Hasta luego! 👋${NC}"
+                exit 0
+                ;;
             1) 
                 select_and_start
                 show_status
@@ -410,10 +362,6 @@ main_menu() {
                 ;;
             5)
                 view_logs
-                ;;
-            6)
-                echo -e "\n${GREEN}¡Hasta luego! 👋${NC}"
-                exit 0
                 ;;
             *)
                 echo -e "${RED}Opción inválida${NC}"
