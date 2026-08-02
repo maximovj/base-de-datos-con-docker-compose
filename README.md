@@ -43,7 +43,7 @@ gvenzl/oracle-xe    21-slim     2.58GB
 
 #  Usar gestionar bases de datos de desarrollo
 
-**Solo script shell***
+**Solo script shell**
 
 ```shell
 $ sudo chmod +x ./manager-db.sh
