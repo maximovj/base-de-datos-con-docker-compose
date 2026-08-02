@@ -10,6 +10,7 @@ Este repositorio contiene base de datos para arracar o levantarlos con `docker c
   - postgres:16-alpine
   - mysql:8.4
   - mongo:7.0
+  - gvenzl/oracle-xe:21-slim
 
 # Docker imagenes en memoria
 
@@ -19,6 +20,7 @@ REPOSITORY          TAG         SIZE
 mysql               8.4         1.13GB
 postgres            16-alpine   420MB
 mongo               7.0         1.19GB
+gvenzl/oracle-xe    21-slim     2.58GB
 ```
 
 # Como usar 
