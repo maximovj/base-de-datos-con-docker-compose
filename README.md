@@ -41,3 +41,22 @@ gvenzl/oracle-xe    21-slim     2.58GB
 
   - [Como usar Oracle XE](/como-usar-oracle.md)
 
+#  Usar gestionar bases de datos de desarrollo
+
+**Solo script shell***
+
+```shell
+$ sudo chmod +x ./manager-db.sh
+$ ./manager-db.sh
+```
+
+### Vistas Previas
+
+![preview_01.png](/screenshots/preview_01.png)
+
+![preview_02.png](/screenshots/preview_02.png)
+
+![preview_03.png](/screenshots/preview_03.png)
+
+![preview_04.png](/screenshots/preview_04.png)
+
