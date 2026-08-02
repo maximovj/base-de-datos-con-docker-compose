@@ -1,9 +1,9 @@
-# Oracle 21.0 + Docker compose
+# Oracle 21 + Docker compose
 
-### Credenciales de bases de datos para Oracle 21.0
+### Credenciales de bases de datos para Oracle 21
 
 ```shell
-# Credenciales de bases de datos / Oracle 21.0 Conectar al PDB (Recomendado)
+# Credenciales de bases de datos / Oracle 21 Conectar al PDB (Recomendado)
 ORACLE_HOST=localhost
 ORACLE_PORT=1521
 ORACLE_USER=oracleuser
@@ -12,7 +12,7 @@ ORACLE_SERVICE_NAME=XEPDB1
 ```
 
 ```shell
-# Credenciales de bases de datos Oracle 21.0  / Conectar como SYS (para administración)
+# Credenciales de bases de datos Oracle 21  / Conectar como SYS (para administración)
 ORACLE_HOST=localhost
 ORACLE_PORT=1521
 ORACLE_USER=sys
@@ -21,16 +21,16 @@ ORACLE_SID=xe
 ORACLE_CONNECTION_TYPE=SYSDBA
 ```
 
-### Como usar Oracle 21.0 + Docker compose 
+### Como usar Oracle 21 + Docker compose 
 
 ```shell
-# Levantar la base  de datos de Oracle 21.0 usando docker compose
+# Levantar la base  de datos de Oracle 21 usando docker compose
 docker compose -f docker-compose-oracle.yml up -d 
 
-# Ver estado de la base  de datos de Oracle 21.0 usando docker compose
+# Ver estado de la base  de datos de Oracle 21 usando docker compose
 docker compose -f docker-compose-oracle.yml ps
 
-# Ver logs de la base  de datos de Oracle 21.0 usando docker compose
+# Ver logs de la base  de datos de Oracle 21 usando docker compose
 docker compose -f docker-compose-oracle.yml logs
 
 # Verificación rápida de que todo funciona
@@ -40,12 +40,12 @@ docker exec -it oracle_docker sqlplus oracleuser/oraclepassword@XEPDB1
 docker compose -f docker-compose-oracle.yml exec oracle_docker \
 sqlplus oracleuser/oraclepassword@XEPDB1
 
-# Detener la base  de datos de Oracle 21.0 usando docker compose
+# Detener la base  de datos de Oracle 21 usando docker compose
 # NOTA: No se elimina el volumen por lo que los datos de la base de datos persisten
 docker compose -f docker-compose-oracle.yml down
 ```
 
-### Conexión a Oracle 21.0 + Docker
+### Conexión a Oracle 21 + Docker
 
 **Formato estándar de URI para Oracle**
 
@@ -181,10 +181,10 @@ jdbc:oracle:thin:oracleuser/oraclepassword@//localhost:1521/XEPDB1?defaultRowPre
 
 **Conectar desde otro contenedor en la misma red**
 
-NOTA: Si usas contedor docker para conectarse a Oracle 21.0 no olvides usar `--network dev_network` para estar en la misma network
+NOTA: Si usas contedor docker para conectarse a Oracle 21 no olvides usar `--network dev_network` para estar en la misma network
 
 ```shell
 # Conectar desde otro contenedor en la misma red
-# Conectar interactivamente a Mongo
+# Conectar interactivamente a Oracle 21
 docker run --rm -it --network container:oracle_docker --entrypoint sqlplus gvenzl/oracle-xe:21-slim oracleuser/oraclepassword@XEPDB1
 ```
